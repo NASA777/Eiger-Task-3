@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Turning a single consumer web-based Platforms into a SaaS</title>
+        <!--include css file -->
+        <link rel="stylesheet" type="text/css" href="styles.css" />
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="row">
+                <div>
+                    <h3>
+                        1- How can we design the system in a way that every Company will be able to serve games on their
+                        gaming site from their domain?
+                    </h3>
+                    <ul>
+                        <li>
+                            Storing all records in the same shared database and using the company's ID as a way to
+                            logically separate data for each company (Tables example: users, game data, configurations,
+                            ...).
+                        </li>
+                        <li>
+                            Each company will have its own dedicated domain. Each domain can configure subdomains
+                            dynamically or through DNS configurations to point to specific resources (such as game
+                            files) for that company.
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>2- What modification should be done to the users table at gPlatform to support this change?</h3>
+                    <ul>
+                        <li>
+                            For every user record where the email serves as a unique identifier, we will add the
+                            company's ID (company_id).
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>
+                        3- Considering we have 1 backend cluster that serves all companies, how can we validate a user
+                        login on one gaming domain in such a way that it does not give access to a different gaming
+                        domain? (i.e. authenticating on site A, grants access to site A only)
+                    </h3>
+                    <ul>
+                        <li>
+                            On user login, we use a JWT token to authenticate requests between the user and the server
+                            via the Authorization header.
+                        </li>
+                        <li>
+                            The middleware will check if the token is valid (checking its signature and expiration) and
+                            retrieve the email and company_id.
+                        </li>
+                        <li>
+                            The middleware will compare the retrieved company_id with the expected company domain name
+                            and grant access or return an error accordingly.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
